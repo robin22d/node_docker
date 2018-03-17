@@ -1,5 +1,6 @@
 FROM node:8-alpine
-COPY . /node_docker
-WORKDIR /node_docker
-CMD [ "npm", "start" ]
+COPY . /docker_node
+WORKDIR /docker_node
+RUN npm install
+CMD [ "node" "index.js"]
 EXPOSE 8080
