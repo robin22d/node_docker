@@ -21,36 +21,30 @@ echo "checking the version on java"
 #checking java has installed
 java -version
 javac -version
-# installing gradle and unzipping it
-echo "gradle installing"
-cd /opt
-wget https://services.gradle.org/distributions/gradle-2.14-bin.zip
-unzip gradle-2.14-bin.zip
-ln -s gradle-2.14 gradle
-cd ..
+
 # Setting environment variables
 echo "updating environment variables"
 cp /etc/profile /etc/profile_backup
 echo 'export JAVA_HOME=/usr/lib/jvm/jre-1.8.0-openjdk' | sudo tee -a /etc/profile
 echo 'export JRE_HOME=/usr/lib/jvm/jre' | sudo tee -a /etc/profile
-echo 'export GRADLE_HOME=/opt/gradle' | sudo tee -a /etc/profile
 echo 'export PATH=$PATH:$GRADLE_HOME/bin' | sudo tee -a /etc/profile
 source /etc/profile
 
 echo "installing docker..."
 #installing docker
-yum install docker -y
 yum install -y yum-utils device-mapper-persistent-data lvm2
 yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
 yum install docker-ce -y
 
+systemctl enable docker.service
 systemctl start docker.service
 systemctl status docker.service
-systemctl restart docker.service
-systemctl status docker.service
+
+usermod -aG docker centos
+
 #https://www.cyberciti.biz/faq/install-use-setup-docker-on-rhel7-centos7-linux/
 echo "checking docker is working"
-echo docker run hello-world
+docker run hello-world
 
 echo "installing gitlab server key"
 # installing gitlab server key
@@ -73,3 +67,4 @@ sleep 70
 # Printing jenkins password
 echo 'jenkins password:'
 cat /var/lib/jenkins/secrets/initialAdminPassword
+
